@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JoyCode Maps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- External stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Geocoder plugin -->
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+  <script>
+    // Read query parameters
+    const params = new URLSearchParams(window.location.search);
+    const lat = parseFloat(params.get("lat")) || 55.86;   // Glasgow default
+    const lng = parseFloat(params.get("lng")) || -4.25;
+    const zoom = parseInt(params.get("zoom")) || 12;
+    const query = params.get("q");
+
+    // Create map
+    var map = L.map('map').setView([lat, lng], zoom);
+
+    // Add OSM tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Branding text at bottom center
+    var joycodeLogo = L.control({position: 'bottomcenter'});
+    joycodeLogo.onAdd = function(map) {
+      var div = L.DomUtil.create('div', 'joycode-logo');
+      div.innerHTML = "JoyCode Maps";
+      return div;
+    };
+    joycodeLogo.addTo(map);
+
+    // Add search bar
+    var geocoder = L.Control.geocoder({
+      defaultMarkGeocode: false
+    }).addTo(map);
+
+    geocoder.on('markgeocode', function(e) {
+      var latlng = e.geocode.center;
+      // Drop marker AND pan/zoom to result
+      L.marker(latlng).addTo(map)
+        .bindPopup(e.geocode.name).openPopup();
+      map.setView(latlng, 14); // zoom in on result
+    });
+
+    // Geolocation: show "You are here"
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var userLat = position.coords.latitude;
+        var userLng = position.coords.longitude;
+        L.marker([userLat, userLng]).addTo(map)
+          .bindPopup("You are here").openPopup();
+      });
+    }
+
+    // Run search if query parameter exists
+    if (query) {
+      geocoder.options.geocoder.geocode(query, function(results) {
+        results.forEach(function(r) {
+          L.marker(r.center).addTo(map)
+            .bindPopup(r.name).openPopup();
+          map.setView(r.center, 14); // pan to search result
+        });
+      });
+    }
+  </script>
+</body>
+</html>

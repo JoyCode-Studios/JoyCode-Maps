@@ -1,0 +1,95 @@
+/* Reset and base styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Map container fills the viewport */
+#map {
+  height: 100vh;
+  width: 100%;
+}
+
+/* JoyCode Maps branding text */
+.joycode-logo {
+  font-weight: bold;
+  color: #4A148C; /* deep JoyCode purple */
+  background: rgba(255, 255, 255, 0.9);
+  padding: 6px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  font-size: 14px;
+}
+
+/* Search bar styling (Leaflet Control Geocoder) */
+.leaflet-control-geocoder {
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  padding: 4px;
+}
+
+.leaflet-control-geocoder-form input {
+  border: none;
+  outline: none;
+  padding: 6px 8px;
+  font-size: 14px;
+  width: 180px;
+  border-radius: 4px;
+}
+
+.leaflet-control-geocoder-icon {
+  background-color: #4A90E2; /* JoyCode blue accent */
+  border-radius: 4px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leaflet-control-geocoder-icon::before {
+  color: white;
+  font-size: 16px;
+}
+
+/* Popup styling */
+.leaflet-popup-content {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Zoom controls */
+.leaflet-control-zoom {
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  background: #4A90E2;
+  color: white;
+  border: none;
+  font-size: 18px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.leaflet-control-zoom-in:hover,
+.leaflet-control-zoom-out:hover {
+  background: #357ABD;
+}
+
+/* Geolocation marker popup */
+.leaflet-popup-content strong {
+  color: #4A148C;
+}
