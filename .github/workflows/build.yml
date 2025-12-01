@@ -1,0 +1,69 @@
+name: Validate and Build JoyCode Maps
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Setup Node.js for linting tools
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Install linting tools
+      - name: Install linters
+        run: |
+          npm install -g eslint stylelint htmlhint
+
+      # Validate HTML files
+      - name: Lint HTML
+        run: htmlhint "**/*.html"
+
+      # Validate CSS files
+      - name: Lint CSS
+        run: stylelint "**/*.css"
+
+      # Validate JavaScript files
+      - name: Lint JS
+        run: eslint "**/*.js"
+
+  smoke-test:
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Install Playwright for headless browser testing
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install @playwright/test
+          npx playwright install
+
+      # Run a smoke test to ensure JoyCode Maps loads
+      - name: Run Playwright tests
+        run: |
+          echo "import { test, expect } from '@playwright/test';
+          test('JoyCode Maps loads', async ({ page }) => {
+            await page.goto('http://localhost:8080/index.html');
+            await expect(page.locator('#map')).toBeVisible();
+          });" > tests.spec.js
+          npx playwright test tests.spec.js
